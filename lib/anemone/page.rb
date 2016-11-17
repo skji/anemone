@@ -45,7 +45,7 @@ module Anemone
       @depth = params[:depth] || 0
       @redirect_to = to_absolute(params[:redirect_to])
       @response_time = params[:response_time]
-      @body = params[:body].encode('UTF-8')
+      @body = params[:body]
       @error = params[:error]
 
       @fetched = !params[:code].nil?
@@ -74,7 +74,22 @@ module Anemone
     #
     def doc
       return @doc if @doc
-      @doc = Nokogiri::HTML(@body.encode('UTF-8')) if @body && html? rescue nil
+      if @body && html?
+        if charset == 'utf-8' || charset.nil?
+            body = @body
+        else
+            body = @body.encode("UTF-8", charset, :invalid => :replace, :undef => :replace) rescue nil
+        end
+        @doc = Nokogiri::HTML(body) if body
+      end
+    end
+
+    #
+    # The charset returned by the content-type request for this page
+    #
+    def charset
+      matcher = content_type.match(/[Cc]harset=[\"]?([a-zA-Z\_\-\d]*)[\"]?/)
+      matcher[1].downcase if matcher
     end
 
     #
