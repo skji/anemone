@@ -45,7 +45,7 @@ module Anemone
       @depth = params[:depth] || 0
       @redirect_to = to_absolute(params[:redirect_to])
       @response_time = params[:response_time]
-      @body = params[:body]
+      @body = params[:body].encode('UTF-8')
       @error = params[:error]
 
       @fetched = !params[:code].nil?
@@ -74,7 +74,7 @@ module Anemone
     #
     def doc
       return @doc if @doc
-      @doc = Nokogiri::HTML(@body) if @body && html? rescue nil
+      @doc = Nokogiri::HTML(@body.encode('UTF-8')) if @body && html? rescue nil
     end
 
     #
