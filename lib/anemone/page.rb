@@ -45,7 +45,7 @@ module Anemone
       @depth = params[:depth] || 0
       @redirect_to = to_absolute(params[:redirect_to])
       @response_time = params[:response_time]
-      @body = params[:body]
+      @body = params[:body].encode('UTF-8')
       @error = params[:error]
 
       @fetched = !params[:code].nil?
